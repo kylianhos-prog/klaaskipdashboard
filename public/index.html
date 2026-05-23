@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Klaas Kip · Bestellingen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">KK</div>
+        <div class="brand-text">
+          <h1>Klaas Kip</h1>
+          <span class="brand-sub">Westbeemster · Bestellingen</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="label-badge" id="header-label" hidden></span>
+        <div class="today" id="today-label"></div>
+        <button class="btn-ghost" id="open-label" type="button">Periode-label</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- AGENDA -->
+      <section id="agenda-view" class="agenda" aria-label="Bestellingen op datum"></section>
+
+      <!-- PERIODE-LABEL -->
+      <section id="label-view" class="label-view" hidden aria-label="Periode-label instellen">
+        <div class="label-panel">
+          <p class="label-eyebrow">Periode-label</p>
+          <h2 class="label-current">
+            Nu actief: <strong id="current-label">GEEN</strong>
+          </h2>
+          <p class="label-help">
+            Zolang een label aanstaat, krijgt elke nieuwe bestelling dit label op de bon en in het overzicht.
+          </p>
+
+          <div class="label-buttons">
+            <button class="big-btn" data-label="KERSTBESTELLING" type="button">Kerstbestelling</button>
+            <button class="big-btn" data-label="PAASBESTELLING" type="button">Paasbestelling</button>
+            <button class="big-btn" data-label="PINKSTEREN" type="button">Pinksteren</button>
+            <button class="big-btn ghost" id="new-label" type="button">+ Nieuw label</button>
+          </div>
+
+          <button class="big-btn danger" id="clear-label" type="button">Label uitzetten</button>
+          <button class="btn-back" id="close-label" type="button">‹ Terug naar bestellingen</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- BON-VOORBEELD -->
+    <div class="overlay" id="bon-overlay" hidden>
+      <div class="bon" id="bon" role="dialog" aria-label="Bon-voorbeeld"></div>
+      <button class="btn-close-bon" id="close-bon" type="button">Sluiten</button>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

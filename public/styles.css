@@ -1,0 +1,698 @@
+/* ============================================================
+   Klaas Kip — dashboard
+   Warme, ambachtelijke poelier-look. Groot & rustig voor iPad.
+   ============================================================ */
+
+:root {
+  --paper: #f4ead7;
+  --paper-2: #fdf8ef;
+  --paper-3: #fbf3e4;
+  --ink: #2a2018;
+  --ink-soft: #7a6a56;
+  --ink-faint: #a99a85;
+
+  --red: #b23a2e;
+  --red-deep: #8c2a20;
+
+  --green: #3f7d4e;
+  --green-soft: #e4efe1;
+  --green-line: #bcd5bd;
+
+  --amber: #bf7d18;
+  --amber-soft: #f7e8c8;
+  --amber-line: #e6cf9b;
+
+  --blue: #386b8c;
+  --blue-soft: #dde9f0;
+  --blue-line: #bcd2de;
+
+  --line: rgba(42, 32, 24, 0.14);
+  --line-strong: rgba(42, 32, 24, 0.28);
+
+  --shadow-sm: 0 1px 2px rgba(42, 32, 24, 0.08);
+  --shadow-md: 0 8px 22px -12px rgba(42, 32, 24, 0.35);
+  --shadow-lg: 0 24px 60px -20px rgba(42, 32, 24, 0.45);
+
+  --radius: 16px;
+  --radius-lg: 22px;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-color: var(--paper);
+  /* subtiele papier-textuur: warme korrel + zachte vlek */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255, 252, 244, 0.6), transparent 38%),
+    radial-gradient(circle at 88% 8%, rgba(178, 58, 46, 0.05), transparent 42%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px clamp(18px, 4vw, 44px);
+  background: linear-gradient(180deg, rgba(244, 234, 215, 0.97), rgba(244, 234, 215, 0.86));
+  backdrop-filter: blur(8px);
+  border-bottom: 1.5px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--paper-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  box-shadow: inset 0 0 0 3px rgba(253, 248, 239, 0.25), var(--shadow-sm);
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.brand-sub {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.today {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(15px, 1.7vw, 19px);
+  color: var(--ink-soft);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.btn-ghost {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--red-deep);
+  background: transparent;
+  border: 2px solid var(--red);
+  border-radius: 999px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.1s ease;
+  min-height: 48px;
+  white-space: nowrap;
+}
+.btn-ghost:hover {
+  background: var(--red);
+  color: var(--paper-2);
+}
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+.label-badge {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-2);
+  background: var(--red);
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+/* ---------- Agenda ---------- */
+main {
+  padding: clamp(20px, 3.5vw, 40px) clamp(16px, 4vw, 44px) 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.day-section {
+  margin-bottom: 44px;
+}
+
+.day-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 20px;
+}
+
+.day-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.day-rule {
+  flex: 1;
+  height: 0;
+  border-bottom: 2.5px dotted var(--line-strong);
+  transform: translateY(-6px);
+}
+
+.day-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+/* ---------- Bestelkaart ---------- */
+.card {
+  position: relative;
+  background: var(--paper-2);
+  border: 1.5px solid var(--line);
+  border-left: 7px solid var(--amber);
+  border-radius: var(--radius);
+  padding: 20px 22px 22px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.18s ease;
+  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.card:hover {
+  transform: translateY(-2px);
+}
+.card[data-status="in_bewerking"] {
+  border-left-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue-soft), var(--paper-2) 60%);
+}
+.card[data-status="klaar"] {
+  border-left-color: var(--green);
+  background: var(--green-soft);
+  opacity: 0.92;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-time {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.card-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink-soft);
+  background: var(--paper-3);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.card-num:hover {
+  background: var(--amber-soft);
+}
+
+.card-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.4vw, 25px);
+  line-height: 1.1;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.card-phone {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+}
+
+.card-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red-deep);
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-line);
+  padding: 3px 9px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.items {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 14px 0;
+  border-top: 1.5px solid var(--line);
+  border-bottom: 1.5px solid var(--line);
+}
+.items li {
+  display: flex;
+  gap: 12px;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.items .qty {
+  font-weight: 800;
+  color: var(--red-deep);
+  min-width: 52px;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-note {
+  display: flex;
+  gap: 8px;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--ink-soft);
+  background: var(--paper-3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+.card-note::before {
+  content: "“";
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 0.7;
+  color: var(--ink-faint);
+}
+
+.status-pill {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.status-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+.status-inline .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.status-open {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+.status-open .dot {
+  background: var(--amber);
+}
+.status-in_bewerking {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.status-in_bewerking .dot {
+  background: var(--blue);
+}
+.status-klaar {
+  color: var(--green);
+  background: var(--green-soft);
+}
+.status-klaar .dot {
+  background: var(--green);
+}
+
+/* ---------- Knoppen op de kaart ---------- */
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  border-radius: 13px;
+  border: 2px solid transparent;
+  padding: 16px 14px;
+  min-height: 60px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-klaar {
+  background: var(--green);
+  color: #f3f8ef;
+  box-shadow: 0 6px 0 -1px #2f6a3d;
+}
+.btn-klaar:hover {
+  filter: brightness(1.05);
+}
+.btn-klaar:active {
+  box-shadow: 0 2px 0 -1px #2f6a3d;
+}
+
+.btn-bel {
+  background: var(--paper-3);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn-bel:hover {
+  background: #fff;
+}
+
+/* kaart "klaar": knop wordt een terugzet-actie */
+.card[data-status="klaar"] .btn-klaar {
+  background: var(--paper-3);
+  color: var(--green);
+  border-color: var(--green-line);
+  box-shadow: none;
+}
+
+/* ---------- Periode-label scherm ---------- */
+.label-view {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+}
+.label-panel {
+  width: min(560px, 100%);
+  background: var(--paper-2);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(26px, 5vw, 46px);
+  text-align: center;
+}
+.label-eyebrow {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin: 0 0 6px;
+}
+.label-current {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(24px, 3.5vw, 32px);
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+.label-current strong {
+  color: var(--red-deep);
+}
+.label-help {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 auto 28px;
+  max-width: 40ch;
+  line-height: 1.5;
+}
+.label-buttons {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.big-btn {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(19px, 2.6vw, 23px);
+  color: var(--ink);
+  background: var(--paper-3);
+  border: 2.5px solid var(--line-strong);
+  border-radius: 16px;
+  padding: 22px;
+  min-height: 72px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.big-btn:hover {
+  background: var(--amber-soft);
+}
+.big-btn:active {
+  transform: scale(0.98);
+}
+.big-btn.active {
+  background: var(--red);
+  color: var(--paper-2);
+  border-color: var(--red-deep);
+}
+.big-btn.ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border-style: dashed;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 17px;
+}
+.big-btn.danger {
+  margin-top: 4px;
+  color: var(--red-deep);
+  background: transparent;
+  border-color: var(--red);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 18px;
+  min-height: 60px;
+  padding: 16px;
+}
+.big-btn.danger:hover {
+  background: #f6ddd9;
+}
+.btn-back {
+  margin-top: 22px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+.btn-back:hover {
+  color: var(--ink);
+}
+
+/* ---------- Bon-voorbeeld ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  grid-auto-flow: row;
+  padding: 24px;
+  background: rgba(42, 32, 24, 0.55);
+  backdrop-filter: blur(3px);
+  animation: fade 0.2s ease;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+.bon {
+  width: 340px;
+  max-width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  background: #fffdf8;
+  color: #1c1c1c;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  padding: 26px 24px 30px;
+  box-shadow: var(--shadow-lg);
+  /* gekartelde onder- en bovenrand zoals een bonprinter */
+  --tooth: 9px;
+  -webkit-mask:
+    radial-gradient(var(--tooth) at 50% 0, transparent 98%, #000) 50% 0 / 18px var(--tooth) repeat-x,
+    radial-gradient(var(--tooth) at 50% 100%, transparent 98%, #000) 50% 100% / 18px var(--tooth) repeat-x,
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: source-over;
+  mask:
+    radial-gradient(var(--tooth) at 50% 0, transparent 98%, #000) 50% 0 / 18px var(--tooth) repeat-x,
+    radial-gradient(var(--tooth) at 50% 100%, transparent 98%, #000) 50% 100% / 18px var(--tooth) repeat-x,
+    linear-gradient(#000, #000);
+  animation: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.bon .b-head {
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.bon .b-label {
+  text-align: center;
+  font-weight: 700;
+  margin-top: 6px;
+  padding: 3px;
+  border: 1.5px solid #1c1c1c;
+}
+.bon .b-num {
+  text-align: center;
+  margin-top: 4px;
+}
+.bon hr {
+  border: none;
+  border-top: 1.5px dashed #1c1c1c;
+  margin: 10px 0;
+}
+.bon .b-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.bon .b-strong {
+  font-weight: 700;
+}
+.bon .b-item {
+  display: flex;
+  gap: 10px;
+}
+.bon .b-item .q {
+  min-width: 42px;
+}
+.bon .b-note {
+  font-style: italic;
+}
+.bon .b-foot {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 11px;
+}
+.btn-close-bon {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: none;
+  border-radius: 13px;
+  padding: 16px 40px;
+  min-height: 56px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.btn-close-bon:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Lege dag / archief ---------- */
+.empty {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 17px;
+  padding: 40px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

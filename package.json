@@ -1,0 +1,13 @@
+{
+  "name": "klaas-kip-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WhatsApp-bestelsysteem dashboard voor poelier Klaas Kip (Westbeemster)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
