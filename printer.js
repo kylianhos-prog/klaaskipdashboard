@@ -111,7 +111,11 @@ async function _doPrint(order) {
   p.println(order.customerName || "Onbekend");
   p.setTextNormal();
   p.bold(false);
-  if (order.phone) p.println(order.phone);
+  if (order.phone) {
+    p.setTextDoubleHeight();
+    p.println(order.phone);
+    p.setTextNormal();
+  }
 
   p.drawLine();
 
@@ -119,7 +123,7 @@ async function _doPrint(order) {
   p.println("BESTELLING");
   p.newLine();
   for (const it of order.items || []) {
-    p.setTextDoubleHeight();
+    p.setTextQuadArea();
     p.bold(true);
     const tag = it.oos ? "  (NIET LEVEREN)" : "";
     p.println(`${it.qty}  ${it.name}${tag}`);
@@ -131,7 +135,9 @@ async function _doPrint(order) {
   if (order.note) {
     p.drawLine();
     p.println("OPMERKING");
+    p.setTextDoubleHeight();
     p.println(`"${order.note}"`);
+    p.setTextNormal();
   }
 
   p.drawLine();
