@@ -55,6 +55,23 @@ async function printOrder(order) {
   return enqueue(() => _doPrint(order));
 }
 
+// Hulpjes voor compacte sectie-kopjes (vet + onderstreept).
+function sectionLabel(p, text) {
+  p.alignLeft();
+  p.bold(true);
+  p.underline(true);
+  p.println(text);
+  p.underline(false);
+  p.bold(false);
+}
+function big(p, text, h = 1, w = 0) {
+  p.bold(true);
+  p.setTextSize(h, w);
+  p.println(text);
+  p.setTextNormal();
+  p.bold(false);
+}
+
 async function _doPrint(order) {
   const p = new ThermalPrinter({
     type: PrinterTypes.EPSON,
@@ -65,7 +82,7 @@ async function _doPrint(order) {
     width: WIDTH,
   });
 
-  // --- Header
+  // --- Header (compact, gecentreerd) ---
   p.alignCenter();
   p.bold(true);
   p.println("KLAAS KIP");
@@ -73,78 +90,71 @@ async function _doPrint(order) {
   p.println("Westbeemster");
   p.newLine();
 
-  // --- Periode-label
+  // --- Periode-label als banner ---
   if (order.label) {
     p.invert(true);
     p.bold(true);
-    p.println(` ${order.label} `);
+    p.setTextSize(1, 0);
+    p.println(`  ${order.label}  `);
+    p.setTextNormal();
     p.bold(false);
     p.invert(false);
     p.newLine();
   }
 
-  // --- Bestelnummer (heel groot, gecentreerd)
-  p.setTextQuadArea();
-  p.bold(true);
-  p.println(`#${order.id}`);
-  p.setTextNormal();
-  p.bold(false);
-
+  // --- Bestelnummer (extra groot, gecentreerd) ---
+  p.alignCenter();
+  p.println("Bestelling");
+  big(p, `#${order.id}`, 2, 2);
+  p.newLine();
   p.drawLine();
+  p.newLine();
 
-  // --- Afhalen
-  p.alignLeft();
-  p.println("AFHALEN");
-  p.setTextDoubleHeight();
-  p.bold(true);
-  p.println(formatDatum(order.pickupDate));
-  if (order.pickupTime) p.println(order.pickupTime);
-  p.setTextNormal();
-  p.bold(false);
-
-  p.drawLine();
-
-  // --- Klant
-  p.println("KLANT");
-  p.setTextDoubleHeight();
-  p.bold(true);
-  p.println(order.customerName || "Onbekend");
-  p.setTextNormal();
-  p.bold(false);
-  if (order.phone) {
-    p.setTextDoubleHeight();
-    p.println(order.phone);
-    p.setTextNormal();
+  // --- Afhalen (datum normaal-dubbelhoogte, tijd extra groot) ---
+  sectionLabel(p, "AFHALEN");
+  big(p, formatDatum(order.pickupDate), 1, 0);
+  if (order.pickupTime) {
+    big(p, order.pickupTime, 2, 2);
   }
-
+  p.newLine();
   p.drawLine();
+  p.newLine();
 
-  // --- Bestelling
-  p.println("BESTELLING");
+  // --- Klant (naam GROOT en vet, telefoon vet+hoog) ---
+  sectionLabel(p, "KLANT");
+  big(p, order.customerName || "Onbekend", 1, 1);
+  if (order.phone) {
+    big(p, order.phone, 1, 0);
+  }
+  p.newLine();
+  p.drawLine();
+  p.newLine();
+
+  // --- Bestelling (alle producten groot en vet) ---
+  sectionLabel(p, "BESTELLING");
   p.newLine();
   for (const it of order.items || []) {
-    p.setTextQuadArea();
-    p.bold(true);
     const tag = it.oos ? "  (NIET LEVEREN)" : "";
-    p.println(`${it.qty}  ${it.name}${tag}`);
-    p.setTextNormal();
-    p.bold(false);
+    big(p, `${it.qty}  ${it.name}${tag}`, 1, 1);
   }
+  p.newLine();
 
-  // --- Opmerking
+  // --- Opmerking (alleen als die er is, met aandacht) ---
   if (order.note) {
     p.drawLine();
-    p.println("OPMERKING");
-    p.setTextDoubleHeight();
-    p.println(`"${order.note}"`);
-    p.setTextNormal();
+    p.newLine();
+    sectionLabel(p, "OPMERKING");
+    big(p, `"${order.note}"`, 1, 0);
+    p.newLine();
   }
 
   p.drawLine();
+  p.newLine();
 
-  // --- Footer
+  // --- Footer (klein, gecentreerd) ---
   p.alignCenter();
   p.println(`Binnengekomen ${formatDateTime(order.receivedAt)}`);
+  p.newLine();
   p.newLine();
   p.newLine();
   p.cut();
