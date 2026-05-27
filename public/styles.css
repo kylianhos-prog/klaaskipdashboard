@@ -317,6 +317,12 @@ main {
   margin-bottom: 12px;
 }
 
+.card-unconfirmed {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--blue-line);
+}
+
 .items {
   list-style: none;
   margin: 0 0 14px;
@@ -336,6 +342,143 @@ main {
   color: var(--red-deep);
   min-width: 52px;
   font-variant-numeric: tabular-nums;
+}
+
+/* tikbare producten + niet op voorraad */
+.items li.item {
+  align-items: center;
+  border-radius: 8px;
+  padding: 3px 6px;
+  margin: 0 -6px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.items li.item:hover {
+  background: var(--paper-3);
+}
+.items li.item .iname {
+  flex: 1;
+}
+.items li.oos {
+  color: var(--red);
+}
+.items li.oos .qty {
+  color: var(--red);
+}
+.items li.oos .iname {
+  text-decoration: line-through;
+}
+.oos-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-2);
+  background: var(--red);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.card-oos {
+  color: var(--paper-2);
+  background: var(--red);
+  border-color: var(--red-deep);
+}
+.card-notified {
+  color: var(--green);
+  background: var(--green-soft);
+  border-color: var(--green-line);
+}
+.added-tag {
+  background: var(--green);
+}
+.items li.added .iname {
+  color: var(--green);
+  font-weight: 600;
+}
+.card-reply {
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-style: normal;
+}
+.card-reply::before {
+  content: none;
+}
+.oos-hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin: -4px 0 14px;
+  font-style: italic;
+}
+
+.btn-restore {
+  background: var(--paper-3);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn-restore:hover {
+  background: #fff;
+}
+
+.card[data-archived] {
+  opacity: 0.9;
+}
+
+.archive-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* controle-popup nieuwe bestelling */
+.review-modal {
+  width: min(460px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--paper-2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(22px, 4vw, 34px);
+  border-top: 6px solid var(--red);
+  animation: rise 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.review-eyebrow {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+.review-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.review-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(24px, 4vw, 30px);
+  margin: 0;
+  color: var(--ink);
+}
+.review-meta {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 4px 0 16px;
+}
+.review-items {
+  font-size: 19px;
+}
+.review-actions {
+  margin-top: 20px;
+}
+.review-actions .btn {
+  width: 100%;
+  min-height: 64px;
+  font-size: 18px;
 }
 
 .card-note {
@@ -412,6 +555,9 @@ main {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+.card-actions.one {
+  grid-template-columns: 1fr;
+}
 
 .btn {
   font-family: var(--font-body);
@@ -454,6 +600,41 @@ main {
 }
 .btn-bel:hover {
   background: #fff;
+}
+
+.btn-notify {
+  background: var(--amber);
+  color: #fff8ec;
+  border-color: var(--amber);
+}
+.btn-notify:hover {
+  filter: brightness(1.05);
+}
+
+.btn-delete {
+  background: var(--paper-3);
+  color: var(--red-deep);
+  border-color: var(--red);
+}
+.btn-delete:hover {
+  background: #f6ddd9;
+}
+
+.review-discard {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: var(--red-deep);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px;
+  cursor: pointer;
+}
+.review-discard:hover {
+  text-decoration: underline;
 }
 
 /* kaart "klaar": knop wordt een terugzet-actie */
@@ -674,6 +855,173 @@ main {
 }
 .btn-close-bon:active {
   transform: scale(0.97);
+}
+
+.bon-buttons {
+  display: flex;
+  gap: 12px;
+}
+.btn-print-bon {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--paper-2);
+  background: var(--red);
+  border: none;
+  border-radius: 13px;
+  padding: 16px 40px;
+  min-height: 56px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.btn-print-bon:active {
+  transform: scale(0.97);
+}
+
+/* ---- Pakbon (grote, duidelijke letters; 80mm) ---- */
+.bon .pb-shop {
+  font-family: var(--font-body);
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1c1c1c;
+}
+.bon .pb-label {
+  font-family: var(--font-body);
+  text-align: center;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  border: 2px solid #1c1c1c;
+  padding: 4px;
+  margin-top: 6px;
+}
+.bon .pb-num {
+  font-family: var(--font-body);
+  text-align: center;
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 8px 0 4px;
+  color: #000;
+}
+.bon .pb-line {
+  border: none;
+  border-top: 2px solid #1c1c1c;
+  margin: 10px 0;
+}
+.bon .pb-section-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 2px;
+}
+.bon .pb-pickup {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.15;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  color: #000;
+}
+.bon .pb-time {
+  font-size: 30px;
+  white-space: nowrap;
+}
+.bon .pb-name {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 27px;
+  line-height: 1.1;
+  color: #000;
+}
+.bon .pb-phone {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 2px;
+  color: #1c1c1c;
+}
+.bon .pb-item {
+  font-family: var(--font-body);
+  display: flex;
+  gap: 12px;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #000;
+}
+.bon .pb-qty {
+  font-weight: 800;
+  min-width: 54px;
+}
+.bon .pb-item-oos {
+  text-decoration: line-through;
+  color: #777;
+}
+.bon .pb-note {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-style: italic;
+  color: #1c1c1c;
+}
+.bon .pb-foot {
+  font-family: var(--font-body);
+  text-align: center;
+  font-size: 11px;
+  color: #777;
+  margin-top: 8px;
+}
+
+/* ---- Printen op 80mm thermische rol ---- */
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 4mm 3mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  body > *:not(.overlay) {
+    display: none !important;
+  }
+  #review-overlay {
+    display: none !important;
+  }
+  .overlay {
+    position: static !important;
+    inset: auto !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  .bon-buttons {
+    display: none !important;
+  }
+  .bon {
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
 }
 
 /* ---------- Lege dag / archief ---------- */

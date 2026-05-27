@@ -4,7 +4,10 @@
     {
       "name": "klaas-kip-dashboard",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["start"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     }
   ]

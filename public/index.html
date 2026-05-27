@@ -26,6 +26,7 @@
       <div class="topbar-right">
         <span class="label-badge" id="header-label" hidden></span>
         <div class="today" id="today-label"></div>
+        <button class="btn-ghost" id="open-archive" type="button">Archief</button>
         <button class="btn-ghost" id="open-label" type="button">Periode-label</button>
       </div>
     </header>
@@ -56,12 +57,29 @@
           <button class="btn-back" id="close-label" type="button">‹ Terug naar bestellingen</button>
         </div>
       </section>
+
+      <!-- ARCHIEF -->
+      <section id="archive-view" class="archive" hidden aria-label="Gearchiveerde bestellingen">
+        <div class="archive-head">
+          <h2 class="day-title">Archief</h2>
+          <button class="btn-back" id="close-archive" type="button">‹ Terug naar bestellingen</button>
+        </div>
+        <div id="archive-cards" class="cards"></div>
+      </section>
     </main>
+
+    <!-- CONTROLE-POPUP NIEUWE BESTELLING -->
+    <div class="overlay" id="review-overlay" hidden>
+      <div class="review-modal" id="review-modal" role="dialog" aria-label="Nieuwe bestelling controleren"></div>
+    </div>
 
     <!-- BON-VOORBEELD -->
     <div class="overlay" id="bon-overlay" hidden>
-      <div class="bon" id="bon" role="dialog" aria-label="Bon-voorbeeld"></div>
-      <button class="btn-close-bon" id="close-bon" type="button">Sluiten</button>
+      <div class="bon" id="bon" role="dialog" aria-label="Pakbon"></div>
+      <div class="bon-buttons">
+        <button class="btn-print-bon" id="print-bon" type="button">Printen</button>
+        <button class="btn-close-bon" id="close-bon" type="button">Sluiten</button>
+      </div>
     </div>
 
     <script src="app.js"></script>

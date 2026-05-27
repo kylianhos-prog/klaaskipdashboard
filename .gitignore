@@ -2,3 +2,10 @@ node_modules/
 *.log
 .DS_Store
 .env
+
+# WhatsApp-sessie (lokale login, niet delen)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Lokale database met bestellingen (klantgegevens)
+data/db.json
