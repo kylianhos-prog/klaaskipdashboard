@@ -4,6 +4,8 @@ const path = require("path");
 const store = require("./store");
 const whatsapp = require("./whatsapp");
 const printer = require("./printer");
+const weather = require("./weather");
+const cron = require("node-cron");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -132,6 +134,16 @@ app.post("/api/orders/:id/confirm-instock", async (req, res) => {
   res.json({ order: store.getOrder(order.id), sent, sendError });
 });
 
+// Weerbericht handmatig (her)printen (voor testen / op verzoek).
+app.post("/api/weather/print", async (req, res) => {
+  try {
+    const r = await weather.printWeather();
+    res.json(r);
+  } catch (e) {
+    res.status(500).json({ error: "Weerbericht mislukt: " + e.message });
+  }
+});
+
 // Bon (her)printen op de thermische printer.
 app.post("/api/orders/:id/print", async (req, res) => {
   const order = store.getOrder(Number(req.params.id));
@@ -164,6 +176,28 @@ app.get("/api/review", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Klaas Kip dashboard draait op http://localhost:${PORT}`);
 });
+
+// Dagelijks weerbericht uitprinten (standaard 09:00 Europe/Amsterdam).
+if (process.env.WEATHER_ENABLED !== "false") {
+  const sched = process.env.WEATHER_CRON || "0 9 * * *";
+  try {
+    cron.schedule(
+      sched,
+      async () => {
+        try {
+          const r = await weather.printWeather();
+          console.log("[weer] dagelijkse print:", JSON.stringify(r));
+        } catch (e) {
+          console.error("[weer] mislukt:", e.message);
+        }
+      },
+      { timezone: "Europe/Amsterdam" }
+    );
+    console.log(`[weer] dagelijks gepland: "${sched}" (Europe/Amsterdam)`);
+  } catch (e) {
+    console.error("[weer] kon planner niet starten:", e.message);
+  }
+}
 
 // WhatsApp-koppeling starten als die is ingeschakeld (zelfde proces = makkelijk voor PM2/Pi).
 if (process.env.WHATSAPP_ENABLED !== "false") {

@@ -48,6 +48,32 @@ function enqueue(fn) {
   return next;
 }
 
+// Maak een nieuwe ThermalPrinter-instance met onze standaardinstellingen.
+function makePrinter() {
+  return new ThermalPrinter({
+    type: PrinterTypes.EPSON,
+    interface: DEVICE,
+    characterSet: "PC858_EURO",
+    removeSpecialCharacters: false,
+    lineCharacter: "-",
+    width: WIDTH,
+  });
+}
+
+// Algemene printer-helper: bouw je layout in de callback, eindig met p.cut().
+// Wordt netjes in de wachtrij gezet en valt stil terug als er geen printer is.
+async function print(buildFn) {
+  if (!deviceAvailable()) {
+    return { skipped: true, reason: "Geen printer beschikbaar (PRINTER_DEVICE niet aanwezig)" };
+  }
+  return enqueue(async () => {
+    const p = makePrinter();
+    await buildFn(p);
+    await p.execute();
+    return { printed: true };
+  });
+}
+
 async function printOrder(order) {
   if (!deviceAvailable()) {
     return { skipped: true, reason: "Geen printer beschikbaar (PRINTER_DEVICE niet aanwezig)" };
@@ -166,4 +192,4 @@ async function _doPrint(order) {
   return { printed: true };
 }
 
-module.exports = { printOrder, deviceAvailable };
+module.exports = { printOrder, deviceAvailable, print, sectionLabel, big };
