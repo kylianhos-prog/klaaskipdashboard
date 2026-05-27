@@ -8,6 +8,7 @@
 // Standaard 4 dagen. Daarna weer gewoon `npm start` draaien.
 
 require("dotenv").config({ override: true });
+const fs = require("fs");
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const store = require("./store");
 const { extractOrder } = require("./ai");
@@ -17,9 +18,16 @@ const DAYS = Number(process.env.BACKFILL_DAYS || 4);
 const SINCE = Math.floor(Date.now() / 1000) - DAYS * 86400;
 const MAX_SCAN = 400; // veiligheidslimiet tegen onverwacht veel berichten
 
+const chromium =
+  ["/usr/bin/chromium", "/usr/bin/chromium-browser"].find((p) => fs.existsSync(p)) || undefined;
+
 const client = new Client({
   authStrategy: new LocalAuth({ dataPath: ".wwebjs_auth" }),
-  puppeteer: { headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox"] },
+  puppeteer: {
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    ...(chromium ? { executablePath: chromium } : {}),
+  },
 });
 
 client.on("qr", () => {

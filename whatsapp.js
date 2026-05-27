@@ -2,9 +2,19 @@
 // Inkomend bericht -> Claude leest de bestelling uit -> bevestiging (JA/NEE) -> dashboard.
 // Draait in hetzelfde proces als de webserver (handig voor PM2 op de Raspberry Pi).
 
+const fs = require("fs");
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const store = require("./store");
+
+// Op de Pi (ARM) gebruiken we de systeem-Chromium; op andere systemen
+// laten we puppeteer zijn eigen bundel kiezen.
+function resolveChromium() {
+  for (const p of ["/usr/bin/chromium", "/usr/bin/chromium-browser"]) {
+    if (fs.existsSync(p)) return p;
+  }
+  return undefined;
+}
 const { extractOrder, extractAlternative } = require("./ai");
 const printer = require("./printer");
 
@@ -233,11 +243,13 @@ async function handleMessage(client, msg) {
 }
 
 function start() {
+  const chromium = resolveChromium();
   client = new Client({
     authStrategy: new LocalAuth({ dataPath: ".wwebjs_auth" }),
     puppeteer: {
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      ...(chromium ? { executablePath: chromium } : {}),
     },
   });
 
