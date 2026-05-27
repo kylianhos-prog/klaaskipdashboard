@@ -102,49 +102,52 @@ async function _doPrint(order) {
     p.newLine();
   }
 
-  // --- Bestelnummer (extra groot, gecentreerd) ---
+  // Eén consistente grootte voor alle data-tekst.
+  const DATA = [1, 1]; // dubbelhoog + dubbelbreed, lekker leesbaar
+
+  // --- Bestelnummer (gecentreerd) ---
   p.alignCenter();
   p.println("Bestelling");
-  big(p, `#${order.id}`, 2, 2);
+  big(p, `#${order.id}`, DATA[0], DATA[1]);
   p.newLine();
   p.drawLine();
   p.newLine();
 
-  // --- Afhalen (datum normaal-dubbelhoogte, tijd extra groot) ---
+  // --- Afhalen ---
   sectionLabel(p, "AFHALEN");
-  big(p, formatDatum(order.pickupDate), 1, 0);
+  big(p, formatDatum(order.pickupDate), DATA[0], DATA[1]);
   if (order.pickupTime) {
-    big(p, order.pickupTime, 2, 2);
+    big(p, order.pickupTime, DATA[0], DATA[1]);
   }
   p.newLine();
   p.drawLine();
   p.newLine();
 
-  // --- Klant (naam GROOT en vet, telefoon vet+hoog) ---
+  // --- Klant ---
   sectionLabel(p, "KLANT");
-  big(p, order.customerName || "Onbekend", 1, 1);
+  big(p, order.customerName || "Onbekend", DATA[0], DATA[1]);
   if (order.phone) {
-    big(p, order.phone, 1, 0);
+    big(p, order.phone, DATA[0], DATA[1]);
   }
   p.newLine();
   p.drawLine();
   p.newLine();
 
-  // --- Bestelling (alle producten groot en vet) ---
+  // --- Bestelling ---
   sectionLabel(p, "BESTELLING");
   p.newLine();
   for (const it of order.items || []) {
     const tag = it.oos ? "  (NIET LEVEREN)" : "";
-    big(p, `${it.qty}  ${it.name}${tag}`, 1, 1);
+    big(p, `${it.qty}  ${it.name}${tag}`, DATA[0], DATA[1]);
   }
   p.newLine();
 
-  // --- Opmerking (alleen als die er is, met aandacht) ---
+  // --- Opmerking ---
   if (order.note) {
     p.drawLine();
     p.newLine();
     sectionLabel(p, "OPMERKING");
-    big(p, `"${order.note}"`, 1, 0);
+    big(p, `"${order.note}"`, DATA[0], DATA[1]);
     p.newLine();
   }
 
