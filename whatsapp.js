@@ -6,6 +6,7 @@ const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const store = require("./store");
 const { extractOrder, extractAlternative } = require("./ai");
+const printer = require("./printer");
 
 // Veiligheidsklep: tijdens testen alleen deze nummers verwerken.
 // Zet WHATSAPP_ALLOWLIST="31657222791,3161..." in .env. Leeg = iedereen (volledig live).
@@ -154,6 +155,11 @@ async function handleMessage(client, msg) {
         receivedAt: new Date().toISOString(),
       });
       console.log(`[whatsapp] (stil) bestelling opgenomen #${order.id} van ${order.phone} — geen antwoord verstuurd`);
+      // Bon meteen printen — fire-and-forget, blokkeert de verwerking niet.
+      printer
+        .printOrder(order)
+        .then((r) => r && r.printed && console.log(`[printer] bon #${order.id} geprint`))
+        .catch((e) => console.error(`[printer] bon #${order.id} mislukt:`, e.message));
     } else {
       console.log("[whatsapp] (stil) bericht is geen bestelling, overgeslagen");
     }

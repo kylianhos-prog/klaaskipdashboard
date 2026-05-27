@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const store = require("./store");
 const whatsapp = require("./whatsapp");
+const printer = require("./printer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -129,6 +130,18 @@ app.post("/api/orders/:id/confirm-instock", async (req, res) => {
     }
   }
   res.json({ order: store.getOrder(order.id), sent, sendError });
+});
+
+// Bon (her)printen op de thermische printer.
+app.post("/api/orders/:id/print", async (req, res) => {
+  const order = store.getOrder(Number(req.params.id));
+  if (!order) return res.status(404).json({ error: "Bestelling niet gevonden" });
+  try {
+    const r = await printer.printOrder(order);
+    res.json(r || { printed: true });
+  } catch (e) {
+    res.status(500).json({ error: "Print mislukt: " + e.message });
+  }
 });
 
 // Bestelling definitief verwijderen.
